@@ -3,7 +3,8 @@
 set -e
 
 echo "Building Awqat..."
-cargo build --quiet --release
+echo "Running ($ cargo build --release)..."
+cargo build --release
 
 if [ $? -ne 0 ]; then
   echo "Failed to build Awqat."
@@ -11,6 +12,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Copying Awqat to the /usr/bin/ directory..."
+echo "Running (# cp ./target/release/awqat /usr/bin/awqat)..."
 sudo cp ./target/release/awqat /usr/bin/awqat
 
 if [ $? -ne 0 ]; then
