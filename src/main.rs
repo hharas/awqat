@@ -9,7 +9,7 @@ const CURRENT_VERSION: &str = "v0.1.1";
 // Start defining Functions
 fn fetch_source(url: &str) -> String {
     let response = ureq::get(url).call().expect("Failed to fetch URL");
-    
+
     response.into_string().expect("Failed to get response text")
 }
 
