@@ -1,45 +1,72 @@
 // بسم الله الرحمن الرحيم
 
 use std::{collections::HashMap, env};
-use {ureq, scraper};
 
 // Some Constants
 const BASE_URL: &str = "https://salah.com";
-const CURRENT_VERSION: &str = "0.1.0";
+const CURRENT_VERSION: &str = "0.1.1";
 
-fn fetch_source(url: String) -> String {
-    let response = ureq::get(&url).call().unwrap();
-    let _text = response.into_string().unwrap();
-
-    return _text;
+// Start defining Functions
+fn fetch_source(url: &str) -> String {
+    let response = ureq::get(url).call().expect("Failed to fetch URL");
+    
+    response.into_string().expect("Failed to get response text")
 }
 
-fn scrape_salah_times(text: String) -> HashMap<String, String> {
-    let _document = scraper::Html::parse_document(&text);
+fn scrape_times(text: &str) -> HashMap<String, String> {
+    let _document = scraper::Html::parse_document(text);
 
     // Defining Selectors
 
-    let fajr_time_selector = scraper::Selector::parse("dd#Fajr").unwrap();
-    let dhuhr_time_selector = scraper::Selector::parse("dd#Dhuhr").unwrap();
-    let asr_time_selector = scraper::Selector::parse("dd#Asr").unwrap();
-    let maghrib_time_selector = scraper::Selector::parse("dd#Maghrib").unwrap();
-    let isha_time_selector = scraper::Selector::parse("dd#Isha").unwrap();
+    let fajr_time_selector =
+        scraper::Selector::parse("dd#Fajr").expect("Failed to find Fajr <dd> element");
+    let dhuhr_time_selector =
+        scraper::Selector::parse("dd#Dhuhr").expect("Failed to find Dhuhr <dd> element");
+    let asr_time_selector =
+        scraper::Selector::parse("dd#Asr").expect("Failed to find Asr <dd> element");
+    let maghrib_time_selector =
+        scraper::Selector::parse("dd#Maghrib").expect("Failed to find Maghrib <dd> element");
+    let isha_time_selector =
+        scraper::Selector::parse("dd#Isha").expect("Failed to find Isha <dd> element");
 
-    let location_selector = scraper::Selector::parse("h2>span").unwrap();
+    let location_selector =
+        scraper::Selector::parse("h2>span").expect("Failed to find Location <span> element");
 
-    let method_selector = scraper::Selector::parse("h4").unwrap();
+    let method_selector =
+        scraper::Selector::parse("h4").expect("Failed to find Method <h4> element");
 
     // Defining Elements
 
-    let fajr_element = _document.select(&fajr_time_selector).next().unwrap();
-    let dhuhr_element = _document.select(&dhuhr_time_selector).next().unwrap();
-    let asr_element = _document.select(&asr_time_selector).next().unwrap();
-    let maghrib_element = _document.select(&maghrib_time_selector).next().unwrap();
-    let isha_element = _document.select(&isha_time_selector).next().unwrap();
+    let fajr_element = _document
+        .select(&fajr_time_selector)
+        .next()
+        .expect("Failed to select Fajr <dd> element");
+    let dhuhr_element = _document
+        .select(&dhuhr_time_selector)
+        .next()
+        .expect("Failed to select Dhuhr <dd> element");
+    let asr_element = _document
+        .select(&asr_time_selector)
+        .next()
+        .expect("Failed to select Asr <dd> element");
+    let maghrib_element = _document
+        .select(&maghrib_time_selector)
+        .next()
+        .expect("Failed to select Maghrib <dd> element");
+    let isha_element = _document
+        .select(&isha_time_selector)
+        .next()
+        .expect("Failed to select Isha <dd> element");
 
-    let location_element = _document.select(&location_selector).next().unwrap();
+    let location_element = _document
+        .select(&location_selector)
+        .next()
+        .expect("Failed to select Location <span> element");
 
-    let method_element = _document.select(&method_selector).next().unwrap();
+    let method_element = _document
+        .select(&method_selector)
+        .next()
+        .expect("Failed to select Method <h4> element");
 
     // Now scrape the values
     // 1. Each Salah Time
@@ -98,10 +125,10 @@ fn scrape_salah_times(text: String) -> HashMap<String, String> {
 
     // Return the HashMap
 
-    return _hashmap;
+    _hashmap
 }
 
-fn display_times(hashmap: HashMap<String, String>, hide: bool) {
+fn format_times(hashmap: &HashMap<String, String>, hide: bool) {
     if hide {
         println!(
             "-------------------\nFajr     : {}\nDhuhr    : {}\n'Asr     : {}\nMaghrib  : {}\n'Isha    : {}\n-------------------\nMethod   : {}",
@@ -115,34 +142,38 @@ fn display_times(hashmap: HashMap<String, String>, hide: bool) {
     }
 }
 
+fn display_times(hide: bool) {
+    println!("Fetching Salah times...");
+    let text = fetch_source(BASE_URL);
+    let hashmap = scrape_times(&text);
+    format_times(&hashmap, hide);
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() == 2 {
-        if args[1] == "--help" {
-            println!(
-                r#"awqat - Simple CLI Application that fetches Salah times from salah.com
-
-Usage: awqat [OPTIONS]
-
-Options:
--V, --version       Print version info
--S, --show-location Run with showing the location
-    --help          Show this help message"#
-            );
-        } else if args[1] == "-V" || args[1] == "--version" {
-            println!("awqat {}\nWritten by Husayn al-Qurashi.", CURRENT_VERSION);
-        } else if args[1] == "-S" || args[1] == "--show-location" {
-            println!("Fetching Salah times...");
-            let text = fetch_source(BASE_URL.to_string());
-            let hashmap = scrape_salah_times(text);
-            display_times(hashmap, false);
+        match args.get(1).map(String::as_str) {
+            Some("--help") => {
+                println!(
+                    r#"awqat - Simple CLI Application that fetches Salah times from salah.com
+    
+    Usage: awqat [OPTIONS]
+    
+    Options:
+    -V, --version       Print version info
+    -S, --show-location Run with showing the location
+        --help          Show this help message"#
+                );
+            }
+            Some("-V") | Some("--version") => {
+                println!("awqat {}\nWritten by Husayn al-Qurashi.", CURRENT_VERSION);
+            }
+            Some("-S") | Some("--show-location") => display_times(false),
+            _ => display_times(true),
         }
     } else {
-        println!("Fetching Salah times...");
-        let text = fetch_source(BASE_URL.to_string());
-        let hashmap = scrape_salah_times(text);
-        display_times(hashmap, true);
+        display_times(true)
     }
 }
 
