@@ -4,7 +4,7 @@ use std::{collections::HashMap, env};
 
 // Some Constants
 const BASE_URL: &str = "https://salah.com";
-const CURRENT_VERSION: &str = "0.1.1";
+const CURRENT_VERSION: &str = "v0.1.1";
 
 // Start defining Functions
 fn fetch_source(url: &str) -> String {
