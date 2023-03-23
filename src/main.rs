@@ -1,14 +1,15 @@
 // بسم الله الرحمن الرحيم
 
 use std::{collections::HashMap, env};
-use {reqwest, scraper};
+use {ureq, scraper};
 
 // Some Constants
 const BASE_URL: &str = "https://salah.com";
 const CURRENT_VERSION: &str = "0.1.0";
 
 fn fetch_source(url: String) -> String {
-    let _text = reqwest::blocking::get(url).unwrap().text().unwrap();
+    let response = ureq::get(&url).call().unwrap();
+    let _text = response.into_string().unwrap();
 
     return _text;
 }
