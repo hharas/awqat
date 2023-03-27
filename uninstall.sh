@@ -3,10 +3,10 @@
 set -e
 
 echo "Uninstalling awqat..."
-sudo rm /usr/bin/awqat
+sudo rm /usr/local/bin/awqat
 
 if [ $? -ne 0 ]; then
-  echo "Failed to uninstall awqat from /usr/bin/."
+  echo "Failed to uninstall awqat from /usr/local/bin/."
   exit 1
 fi
 

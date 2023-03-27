@@ -33,17 +33,17 @@ Build `awqat`:
 cargo build --release
 ```
 
-Then copy the binary file to `/usr/bin/`:
+Then copy the binary file to `/usr/local/bin/`:
 
 ```sh
-sudo cp ./target/release/awqat /usr/bin/awqat
+sudo cp ./target/release/awqat /usr/local/bin/awqat
 ```
 
 Now you can use it by running `awqat` in your Terminal.
 
 ### Removal
 
-Delete the `/usr/bin/awqat` file, or `cd` into the repo and run:
+Delete the `/usr/local/bin/awqat` file, or `cd` into the repo and run:
 
 ```sh
 ./uninstall.sh

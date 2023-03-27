@@ -11,12 +11,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Copying Awqat to the /usr/bin/ directory..."
-echo "Running (# cp ./target/release/awqat /usr/bin/awqat)..."
-sudo cp ./target/release/awqat /usr/bin/awqat
+echo "Copying Awqat to the /usr/local/bin/ directory..."
+echo "Running ($ cp ./target/release/awqat /usr/local/bin/awqat)..."
+cp ./target/release/awqat /usr/local/bin/awqat
 
 if [ $? -ne 0 ]; then
-  echo "Failed to copy Awqat to /usr/bin/."
+  echo "Failed to copy Awqat to /usr/local/bin/."
   exit 1
 fi
 
