@@ -11,9 +11,15 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+if command -v upx &> /dev/null; then
+  echo "Compressing Awqat's Executable..."
+  echo "Running ($ upx --best --lzma target/release/awqat)..."
+  upx --best --lzma target/release/awqat
+fi
+
 echo "Copying Awqat to the /usr/local/bin/ directory..."
-echo "Running ($ cp ./target/release/awqat /usr/local/bin/awqat)..."
-cp ./target/release/awqat /usr/local/bin/awqat
+echo "Running (# cp ./target/release/awqat /usr/local/bin/awqat)..."
+sudo cp ./target/release/awqat /usr/local/bin/awqat
 
 if [ $? -ne 0 ]; then
   echo "Failed to copy Awqat to /usr/local/bin/."
