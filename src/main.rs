@@ -4,7 +4,7 @@ use std::{collections::HashMap, env};
 
 // Some Constants
 const BASE_URL: &str = "https://salah.com";
-const CURRENT_VERSION: &str = "v0.1.2";
+const CURRENT_VERSION: &str = "v0.1.3";
 
 // Start defining Functions
 fn fetch_source(url: &str) -> String {
@@ -154,20 +154,22 @@ fn main() {
 
     if args.len() == 2 {
         match args.get(1).map(String::as_str) {
-            Some("--help") => {
+            Some("-H") | Some("--help") => {
                 println!(
                     r#"awqat - Simple CLI Application that fetches Salah times from salah.com
     
-    Usage: awqat [OPTIONS]
-    
-    Options:
+Usage: awqat [OPTIONS]
+
+Options:
     -V, --version       Print version info
     -S, --show-location Run with showing the location
-        --help          Show this help message"#
+    -H, --help          Show this help message
+
+Amad Project: https://codeberg.org/amad"#
                 );
             }
             Some("-V") | Some("--version") => {
-                println!("awqat {}\nWritten by Husayn al-Qurashi.", CURRENT_VERSION);
+                println!("awqat {}\nAmad Project: https://codeberg.org/amad", CURRENT_VERSION);
             }
             Some("-S") | Some("--show-location") => display_times(false),
             _ => display_times(true),
