@@ -1,16 +1,21 @@
 // بسم الله الرحمن الرحيم
 
-use std::{collections::HashMap, env};
+use std::{collections::HashMap, env, process::exit};
 
 // Some Constants
 const BASE_URL: &str = "https://salah.com";
-const CURRENT_VERSION: &str = "v0.1.3";
+const CURRENT_VERSION: &str = "v0.1.4";
 
 // Start defining Functions
 fn fetch_source(url: &str) -> String {
-    let response = ureq::get(url).call().expect("Failed to fetch URL");
+    match ureq::get(url).call() {
+        Ok(response) => response.into_string().expect("Failed to get response text"),
 
-    response.into_string().expect("Failed to get response text")
+        Err(error) => {
+            println!("{}", format!("Failed to get ({}): {}", BASE_URL, error));
+            exit(1);
+        }
+    }
 }
 
 fn scrape_times(text: &str) -> HashMap<String, String> {
@@ -169,7 +174,10 @@ Amad Project: https://codeberg.org/amad"#
                 );
             }
             Some("-V") | Some("--version") => {
-                println!("awqat {}\nAmad Project: https://codeberg.org/amad", CURRENT_VERSION);
+                println!(
+                    "awqat {}\nAmad Project: https://codeberg.org/amad",
+                    CURRENT_VERSION
+                );
             }
             Some("-S") | Some("--show-location") => display_times(false),
             _ => display_times(true),
